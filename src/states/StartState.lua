@@ -8,12 +8,17 @@ function StartState:update(dt)
     gSounds['paddle-hit']:play()
   end
 
-  -- confirm whichever option we have selected to change screens
   if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
     gSounds['confirm']:play()
 
     if highlighted == 1 then
-      gStateMachine:change('play')
+      -- pass the game state
+      gStateMachine:change('serve', {
+        paddle = Paddle(1),
+        bricks = LevelMaker.createMap(),
+        health = 3,
+        score = 0
+      })
     end
   end
 
@@ -23,17 +28,14 @@ function StartState:update(dt)
 end
 
 function StartState:render()
-  -- title
   love.graphics.setFont(gFonts['large'])
   love.graphics.printf("BREAKOUT",
     0, gameHeight / 3,
     gameWidth, 'center'
   )
   
-  -- instructions
   love.graphics.setFont(gFonts['medium'])
 
-  -- if we're highlighting 1, render that option blue
   if highlighted == 1 then
     love.graphics.setColor(0, 255, 255, 255)
   end
@@ -42,12 +44,10 @@ function StartState:render()
     gameWidth, 'center'
   )
 
-  -- reset the color
   love.graphics.setColor(255, 255, 255, 255)
 
-  -- render option 2 blue if we're highlighting that one
   if highlighted == 2 then
-      love.graphics.setColor(0, 255, 255, 255)
+    love.graphics.setColor(0, 255, 255, 255)
   end
   love.graphics.printf("HIGH SCORES",
     0, gameHeight / 2 + 90,
