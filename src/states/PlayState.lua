@@ -11,6 +11,8 @@ function PlayState:init()
 
   self.ball.x = gameWidth / 2 - 4
   self.ball.y = gameHeight - 42
+
+  self.bricks = LevelMaker.createMap()
 end
 
 function PlayState:update(dt)
@@ -33,6 +35,36 @@ function PlayState:update(dt)
     gSounds['paddle-hit']:play()
   end
 
+  for k, brick in pairs(self.bricks) do
+    if brick.inPlay and self.ball:collides(brick) then
+      brick:hit()
+
+      -- left edge;
+      if self.ball.x + 2 < brick.x and self.ball.dx > 0 then
+        self.ball.dx = -self.ball.dx
+        self.ball.x = brick.x - 8
+      
+      -- right edge;
+      elseif self.ball.x + 6 > brick.x + brick.width and self.ball.dx < 0 then
+        self.ball.dx = -self.ball.dx
+        self.ball.x = brick.x + 32
+      
+      -- top edge;
+      elseif self.ball.y < brick.y then
+        self.ball.dy = -self.ball.dy
+        self.ball.y = brick.y - 8
+      
+      -- bottom edge;
+      else
+        self.ball.dy = -self.ball.dy
+        self.ball.y = brick.y + 16
+      end
+      
+      self.ball.dy = self.ball.dy * 1.02
+      break
+    end
+  end
+
   self.paddle:update(dt)
   self.ball:update(dt)
 
@@ -42,6 +74,10 @@ function PlayState:update(dt)
 end
 
 function PlayState:render()
+  for k, brick in pairs(self.bricks) do
+    brick:render()
+  end
+  
   self.paddle:render()
   self.ball:render()
 

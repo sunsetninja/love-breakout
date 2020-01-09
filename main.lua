@@ -24,7 +24,8 @@ function love.load()
 
   gFrames = {
     ['paddles'] = GenerateQuadsPaddles(gTextures['main']),
-    ['balls'] = GenerateQuadsBalls(gTextures['main'])
+    ['balls'] = GenerateQuadsBalls(gTextures['main']),
+    ['bricks'] = GenerateQuadsBricks(gTextures['main'])
   }
 
   push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
@@ -59,7 +60,7 @@ function love.load()
   -- 6. 'game-over' (the player has lost; display score and allow restart)
   gStateMachine = StateMachine {
     ['start'] = function() return StartState() end,
-    ['play'] = function() return PlayState() end
+    ['play'] = function() return PlayState() end,
   }
   gStateMachine:change('start')
 
