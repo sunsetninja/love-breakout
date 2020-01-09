@@ -3,6 +3,14 @@ PlayState = Class{__includes = BaseState}
 function PlayState:init()
   self.paddle = Paddle()
   self.paused = false
+
+  self.ball = Ball(math.random(7))
+
+  self.ball.dx = math.random(-200, 200)
+  self.ball.dy = math.random(-50, -60)
+
+  self.ball.x = gameWidth / 2 - 4
+  self.ball.y = gameHeight - 42
 end
 
 function PlayState:update(dt)
@@ -19,8 +27,14 @@ function PlayState:update(dt)
     return
   end
 
-  -- update positions based on velocity
+  if self.ball:collides(self.paddle) then
+    self.ball.y = gameHeight - 42
+    self.ball.dy = -self.ball.dy
+    gSounds['paddle-hit']:play()
+  end
+
   self.paddle:update(dt)
+  self.ball:update(dt)
 
   if love.keyboard.wasPressed('escape') then
     love.event.quit()
@@ -29,8 +43,8 @@ end
 
 function PlayState:render()
   self.paddle:render()
+  self.ball:render()
 
-  -- pause text, if paused
   if self.paused then
     love.graphics.setFont(gFonts['large'])
     love.graphics.printf("PAUSED", 0, gameHeight / 2 - 16, gameWidth, 'center')
