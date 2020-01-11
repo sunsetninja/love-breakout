@@ -22,8 +22,8 @@ function LevelMaker.createMap(level)
   local highestColor = math.min(5, level % 3 + 3)
 
   for y = 1, numRows do
-    local skipPattern = math.random(1, 2) == 1 and true or false
-    local alternatePattern = math.random(1, 2) == 1 and true or false
+    local skipPattern = math.random(2) == 1 and true or false
+    local alternatePattern = math.random(2) == 1 and true or false
     
     local alternateColor1 = math.random(1, highestColor)
     local alternateColor2 = math.random(1, highestColor)

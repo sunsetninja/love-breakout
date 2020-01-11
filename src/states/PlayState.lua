@@ -8,7 +8,7 @@ function PlayState:enter(params)
   self.ball = params.ball
   self.ball.dx = math.random(-200, 200)
   self.ball.dy = math.random(-50, -60)
-  
+
   self.paused = false
 end
 
@@ -30,19 +30,22 @@ function PlayState:update(dt)
     self.ball.y = self.paddle.y - 8
     self.ball.dy = -self.ball.dy
 
+    -- left side of the paddle
     if self.ball.x < self.paddle.x + (self.paddle.width / 2) and self.paddle.dx < 0 then
       self.ball.dx = -50 + -(8 * (self.paddle.x + self.paddle.width / 2 - self.ball.x))
+    -- right side of the paddle
     elseif self.ball.x > self.paddle.x + (self.paddle.width / 2) and self.paddle.dx > 0 then
       self.ball.dx = 50 + (8 * math.abs(self.paddle.x + self.paddle.width / 2 - self.ball.x))
     end
     
-  gSounds['paddle-hit']:play()
+    gSounds['paddle-hit']:play()
   end
 
   for k, brick in pairs(self.bricks) do
     if brick.inPlay and self.ball:collides(brick) then
       brick:hit()
-      self.score = self.score + 10
+      
+      self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
       -- left edge; (+2 for set by x as priority collision)
       if self.ball.x + 2 < brick.x and self.ball.dx > 0 then
