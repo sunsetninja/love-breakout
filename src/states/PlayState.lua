@@ -42,6 +42,8 @@ function PlayState:update(dt)
   end
 
   for k, brick in pairs(self.bricks) do
+    brick:update(dt)
+    
     if brick.inPlay and self.ball:collides(brick) then
       brick:hit()
       
@@ -102,6 +104,10 @@ end
 function PlayState:render()
   for k, brick in pairs(self.bricks) do
     brick:render()
+  end
+
+  for k, brick in pairs(self.bricks) do
+    brick:renderParticles()
   end
   
   self.paddle:render()
