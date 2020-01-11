@@ -12,7 +12,6 @@ function StartState:update(dt)
     gSounds['confirm']:play()
 
     if highlighted == 1 then
-      -- pass the game state
       gStateMachine:change('serve', {
         paddle = Paddle(1),
         bricks = LevelMaker.createMap(),
@@ -54,6 +53,5 @@ function StartState:render()
     gameWidth, 'center'
   )
 
-  -- reset the color
   love.graphics.setColor(255, 255, 255, 255)
 end

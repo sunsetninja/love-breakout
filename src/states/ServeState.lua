@@ -38,8 +38,8 @@ function ServeState:render()
     brick:render()
   end
 
-  -- renderScore(self.score)
-  -- renderHealth(self.health)
+  renderScore(self.score)
+  renderHealth(self.health)
 
   love.graphics.setFont(gFonts['medium'])
   love.graphics.printf('Press Enter to serve!', 0, gameHeight / 2,

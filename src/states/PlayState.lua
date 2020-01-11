@@ -2,7 +2,9 @@ PlayState = Class{__includes = BaseState}
 
 function PlayState:enter(params)
   self.paddle = params.paddle
-  self.bricks = params.bricks  
+  self.bricks = params.bricks
+  self.score = params.score
+  self.health = params.health
   self.ball = params.ball
   self.ball.dx = math.random(-200, 200)
   self.ball.dy = math.random(-50, -60)
@@ -40,6 +42,7 @@ function PlayState:update(dt)
   for k, brick in pairs(self.bricks) do
     if brick.inPlay and self.ball:collides(brick) then
       brick:hit()
+      self.score = self.score + 10
 
       -- left edge; (+2 for set by x as priority collision)
       if self.ball.x + 2 < brick.x and self.ball.dx > 0 then
@@ -70,6 +73,24 @@ function PlayState:update(dt)
   self.paddle:update(dt)
   self.ball:update(dt)
 
+  if self.ball.y >= gameHeight then
+    self.health = self.health - 1
+    gSounds['hurt']:play()
+
+    if self.health == 0 then
+      gStateMachine:change('game-over', {
+        score = self.score
+      })
+    else
+      gStateMachine:change('serve', {
+        paddle = self.paddle,
+        bricks = self.bricks,
+        health = self.health,
+        score = self.score
+      })
+    end
+  end
+
   if love.keyboard.wasPressed('escape') then
     love.event.quit()
   end
@@ -82,6 +103,9 @@ function PlayState:render()
   
   self.paddle:render()
   self.ball:render()
+
+  renderScore(self.score)
+  renderHealth(self.health)
 
   if self.paused then
     love.graphics.setFont(gFonts['large'])
