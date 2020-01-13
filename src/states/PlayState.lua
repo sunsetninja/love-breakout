@@ -118,6 +118,7 @@ function PlayState:update(dt)
         health = self.health,
         score = self.score,
         level = self.level,
+        highScores = self.highScores,
         recoverPoints = self.recoverPoints
       })
     end
