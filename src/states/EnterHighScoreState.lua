@@ -1,9 +1,9 @@
 EnterHighScoreState = Class{__includes = BaseState}
 
 local chars = {
-    [1] = 65,
-    [2] = 65,
-    [3] = 65
+  [1] = 65,
+  [2] = 65,
+  [3] = 65
 }
 
 local highlightedChar = 1

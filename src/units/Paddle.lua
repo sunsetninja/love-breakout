@@ -1,6 +1,6 @@
 Paddle = Class{}
 
-function Paddle:init()
+function Paddle:init(skin)
   self.x = gameWidth / 2 - 32
   self.y = gameHeight - 32
   self.dx = 0
@@ -8,7 +8,7 @@ function Paddle:init()
   self.width = 64
   self.height = 16
 
-  self.skin = 1
+  self.skin = skin
   self.size = 2
 end
 
