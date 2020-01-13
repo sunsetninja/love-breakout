@@ -2,6 +2,10 @@ StartState = Class{__includes = BaseState}
 
 local highlighted = 1;
 
+function StartState:enter(params)
+  self.highScores = params.highScores
+end
+
 function StartState:update(dt)
   if love.keyboard.wasPressed('up') or love.keyboard.wasPressed('down') then
     highlighted = highlighted == 1 and 2 or 1
@@ -15,9 +19,14 @@ function StartState:update(dt)
       gStateMachine:change('serve', {
         paddle = Paddle(1),
         bricks = LevelMaker.createMap(1),
-        health = 3,
-        score = 0,
-        level = 1
+        health = 1,
+        score = 1000,
+        level = 1,
+        highScores = self.highScores
+      })
+    else
+      gStateMachine:change('high-scores', {
+        highScores = self.highScores
       })
     end
   end
