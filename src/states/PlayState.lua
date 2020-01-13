@@ -10,6 +10,7 @@ function PlayState:enter(params)
   self.ball = params.ball
   self.ball.dx = math.random(-200, 200)
   self.ball.dy = math.random(-60, -70)
+  self.recoverPoints = params.recoverPoints
 
   self.paused = false
 end
@@ -51,6 +52,14 @@ function PlayState:update(dt)
       
       self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
+      if self.score > self.recoverPoints then
+        self.health = math.min(3, self.health + 1)
+
+        self.recoverPoints = math.min(100000, self.recoverPoints * 2)
+
+        gSounds['recover']:play()
+      end
+
       if self:checkVictory() then
         gSounds['victory']:play()
 
@@ -59,7 +68,8 @@ function PlayState:update(dt)
           paddle = self.paddle,
           health = self.health,
           score = self.score,
-          ball = self.ball
+          ball = self.ball,
+          recoverPoints = self.recoverPoints
         })
       end
 
@@ -107,7 +117,8 @@ function PlayState:update(dt)
         bricks = self.bricks,
         health = self.health,
         score = self.score,
-        level = self.level
+        level = self.level,
+        recoverPoints = self.recoverPoints
       })
     end
   end

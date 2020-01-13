@@ -152,7 +152,7 @@ function loadHighScores()
     local scores = ''
     for i = 10, 1, -1 do
       scores = scores .. 'CTO\n'
-      scores = scores .. tostring(i * 500) .. '\n'
+      scores = scores .. tostring(i * 1000) .. '\n'
     end
 
     love.filesystem.write('breakout.lst', scores)
