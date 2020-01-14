@@ -143,15 +143,10 @@ function renderScore(score)
   love.graphics.printf(tostring(score), gameWidth - 50, 5, 40, 'right')
 end
 
---[[
-  Loads high scores from a .lst file, saved in LÖVE2D's default save directory in a subfolder
-  called 'breakout'.
-]]
 function loadHighScores()
   love.filesystem.setIdentity('breakout')
 
-  -- if the file doesn't exist, initialize it with some default scores
-  if not love.filesystem.exists('breakout.lst') then
+  if not love.filesystem.getInfo('breakout.lst') then
     local scores = ''
     for i = 10, 1, -1 do
       scores = scores .. 'CTO\n'
@@ -162,7 +157,6 @@ function loadHighScores()
   end
 
   local name = true
-  local currentName = nil
   local counter = 1
 
   local scores = {}
