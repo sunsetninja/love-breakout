@@ -6,7 +6,7 @@ function Powerup:init(type)
 
   self.type = type
 
-  self.inGame = true
+  self.inPlay = true
   self.x = math.random(50, gameWidth - 50)
   self.y = -self.height * 2
   self.dy = 50
@@ -25,17 +25,17 @@ function Powerup:collides(target)
 end
 
 function Powerup:update(dt)
-  if self.inGame then
+  if self.inPlay then
     self.y = self.y + self.dy * dt
   end
 
   if self.y + self.height > gameHeight then
-    self.inGame = false
+    self.inPlay = false
   end
 end
 
 function Powerup:render()
-  if self.inGame then
+  if self.inPlay then
     love.graphics.draw(gTextures['main'], gFrames['powerups'][self.type],
       self.x, self.y)
   end

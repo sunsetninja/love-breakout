@@ -11,7 +11,7 @@ function PlayState:enter(params)
   self.ball = params.ball
   self.ball.dx = math.random(-200, 200)
   self.ball.dy = math.random(-60, -70)
-  self.ball.inGame = true
+  self.ball.inPlay = true
   self.balls = {
     [1] = self.ball,
   }
@@ -37,9 +37,9 @@ function PlayState:update(dt)
   end
 
   -- powerups
-  if self.powerup and self.powerup.inGame then
+  if self.powerup and self.powerup.inPlay then
     if self.powerup:collides(self.paddle) then
-      self.powerup.inGame = false
+      self.powerup.inPlay = false
 
       if not (self.powerup.type == 4) then
         self.score = self.score + 200
@@ -77,13 +77,13 @@ function PlayState:update(dt)
         local extraBallIndex = self.ballsCount + 1
 
         for key, value in pairs(self.balls) do
-          if not value.inGame then
+          if not value.inPlay then
             extraBallIndex = key
           end
         end
 
         local extraBall = Ball(math.random(7), extraBallIndex)
-        extraBall.inGame = true
+        extraBall.inPlay = true
         extraBall.x = self.paddle.x + (self.paddle.width / 2) - 4
         extraBall.y = self.paddle.y - 8
         extraBall.dx = math.random(-200, 200)
@@ -99,7 +99,7 @@ function PlayState:update(dt)
 
   -- balls
   for b, ball in pairs(self.balls) do
-    if ball.inGame then
+    if ball.inPlay then
       ball:update(dt)
 
       if ball:collides(self.paddle) then
@@ -174,9 +174,9 @@ function PlayState:update(dt)
       end
 
       
-      if ball.y >= gameHeight and ball.inGame then
+      if ball.y >= gameHeight and ball.inPlay then
         local lastBall = self.ballsCount == 1
-        ball.inGame = false
+        ball.inPlay = false
         self.ballsCount = math.max(0, self.ballsCount - 1)
         
         if lastBall then
@@ -188,7 +188,7 @@ function PlayState:update(dt)
 
   self.paddle:update(dt)
   
-  if self.powerup and self.powerup.inGame then
+  if self.powerup and self.powerup.inPlay then
     self.powerup:update(dt)
   end
 
@@ -209,7 +209,7 @@ function PlayState:render()
   self.paddle:render()
 
   for b, ball in pairs(self.balls) do
-    if ball.inGame then
+    if ball.inPlay then
       ball:render()
     end
   end
