@@ -9,7 +9,7 @@ function ServeState:enter(params)
   self.level = params.level
   self.recoverPoints = params.recoverPoints
 
-  self.ball = Ball(math.random(7))
+  self.ball = Ball(math.random(7), 1)
 end
 
 function ServeState:update(dt)

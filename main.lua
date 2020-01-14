@@ -27,7 +27,8 @@ function love.load()
     ['paddles'] = GenerateQuadsPaddles(gTextures['main']),
     ['balls'] = GenerateQuadsBalls(gTextures['main']),
     ['bricks'] = GenerateQuadsBricks(gTextures['main']),
-    ['hearts'] = GenerateQuads(gTextures['hearts'], 10, 9)
+    ['hearts'] = GenerateQuads(gTextures['hearts'], 10, 9),
+    ['powerups'] = GenerateQuadsPowerups(gTextures['main']),
   }
 
   push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {
@@ -61,7 +62,7 @@ function love.load()
   -- 5. 'play' (the ball is in play, bouncing between paddles)
   -- 6. 'victory' (the current level is over, with a victory jingle)
   -- 7. 'game-over' (the player has lost; display score and allow restart)
-  -- 7. 'enter-high-score' (the player has lost; enter high score)
+  -- 8. 'enter-high-score' (the player has lost; enter high score)
   gStateMachine = StateMachine {
     ['start'] = function() return StartState() end,
     ['high-scores'] = function() return HighScoreState() end,

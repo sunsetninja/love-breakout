@@ -1,12 +1,27 @@
 Ball = Class{}
 
-function Ball:init(skin)
-  self.width = 8
-  self.height = 8
+ballSizes = {
+  -- small
+  [1] = 4,
+  -- medium
+  [2] = 8,
+  -- large
+  [3] = 12,
+}
 
+defaultBallSize = 2
+
+function Ball:init(skin, index)
+  self.x = 0
+  self.y = 0
   self.dy = 0
   self.dx = 0
-
+  self.index = index
+  
+  self.size = defaultBallSize
+  self.width = ballSizes[self.size]
+  self.height = ballSizes[self.size]
+  
   self.skin = skin
 end
 
@@ -55,5 +70,27 @@ end
 
 function Ball:render()
   love.graphics.draw(gTextures['main'], gFrames['balls'][self.skin],
-    self.x, self.y)
+    self.x, self.y, 0,
+    self.width / ballSizes[defaultBallSize],
+    self.height / ballSizes[defaultBallSize]
+  )
+end
+
+function Ball:setSize(size)
+  local oldCenterX = self.x + self.width / 2
+  local oldCenterY = self.y + self.height / 2
+  
+  self.size = size
+  self.width = ballSizes[self.size]
+  self.height = ballSizes[self.size]
+  self.x = math.max(0, oldCenterX - self.width / 2)
+  self.y = math.max(0, oldCenterY - self.height / 2)
+end
+
+function Ball:increaseSize()
+  self:setSize(math.min(3, self.size + 1))
+end
+
+function Ball:decreaseSize()
+  self:setSize(math.max(1, self.size - 1))
 end
