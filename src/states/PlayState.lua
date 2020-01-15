@@ -20,6 +20,7 @@ function PlayState:enter(params)
   self.recoverPoints = params.recoverPoints
   self.powerup = nil
   self.paused = false
+  self.lastPowerupTime = love.timer.getTime()
 end
 
 function PlayState:update(dt)
@@ -83,7 +84,6 @@ function PlayState:update(dt)
           end
       end
     end
-
       if self.powerup.type == 9 and self.ballsCount < 3 then
         local extraBallIndex = self.ballsCount + 1
 
@@ -106,7 +106,13 @@ function PlayState:update(dt)
     end
   else
     local maxPowerup = self:hasLockedBricks() and 10 or 9
-    self.powerup = Powerup(math.random(3, maxPowerup))
+    
+    local sinceLastPowerup = love.timer.getTime() - self.lastPowerupTime
+    
+    if sinceLastPowerup > math.random(12, 20) then
+      self.powerup = Powerup(math.random(3, maxPowerup))
+      self.lastPowerupTime = love.timer.getTime()
+    end
   end
 
   -- balls
