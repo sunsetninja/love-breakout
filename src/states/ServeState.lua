@@ -16,7 +16,7 @@ function ServeState:update(dt)
   self.paddle:update(dt)
   
   self.ball.x = self.paddle.x + (self.paddle.width / 2) - 4
-  self.ball.y = self.paddle.y - 8
+  self.ball.y = self.paddle.y - self.ball.width
 
   if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
     gStateMachine:change('play', {

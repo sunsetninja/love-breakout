@@ -33,7 +33,7 @@ paletteColors = {
   }
 }
 
-function Brick:init(x, y)
+function Brick:init(x, y, isLocked)
   self.tier = 0
   self.color = 1
   
@@ -43,6 +43,7 @@ function Brick:init(x, y)
   self.height = 16
   
   self.inPlay = true
+  self.isLocked = isLocked
 
   self.psystem = love.graphics.newParticleSystem(gTextures['particle'], 64)
 
@@ -94,9 +95,21 @@ end
 
 function Brick:render()
   if self.inPlay then
-    love.graphics.draw(gTextures['main'],
-      gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
-      self.x, self.y)
+    if self.isLocked then
+      love.graphics.draw(
+        gTextures['main'],
+        love.graphics.newQuad(
+          160, 48, 32, 16,
+          gTextures['main']:getDimensions()
+        ),
+        self.x, self.y
+      )
+    else
+      love.graphics.draw(gTextures['main'],
+        gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
+        self.x, self.y
+      )
+    end
   end
 end
 

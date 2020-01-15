@@ -72,6 +72,17 @@ function PlayState:update(dt)
           ball:increaseSize()
         end
       end
+      
+      if self.powerup.type == 10 then
+        for i = #self.bricks, 1, -1 do
+          brick = self.bricks[i]
+          
+          if brick.isLocked then
+            brick.isLocked = false
+            break
+          end
+      end
+    end
 
       if self.powerup.type == 9 and self.ballsCount < 3 then
         local extraBallIndex = self.ballsCount + 1
@@ -85,7 +96,7 @@ function PlayState:update(dt)
         local extraBall = Ball(math.random(7), extraBallIndex)
         extraBall.inPlay = true
         extraBall.x = self.paddle.x + (self.paddle.width / 2) - 4
-        extraBall.y = self.paddle.y - 8
+        extraBall.y = self.paddle.y - extraBall.width
         extraBall.dx = math.random(-200, 200)
         extraBall.dy = math.random(-60, -70)
         
@@ -94,7 +105,8 @@ function PlayState:update(dt)
       end
     end
   else
-    self.powerup = Powerup(math.random(3, 9))
+    local maxPowerup = self:hasLockedBricks() and 10 or 9
+    self.powerup = Powerup(math.random(3, maxPowerup))
   end
 
   -- balls
@@ -103,15 +115,15 @@ function PlayState:update(dt)
       ball:update(dt)
 
       if ball:collides(self.paddle) then
-        ball.y = self.paddle.y - 8
+        ball.y = self.paddle.y - ball.width
         ball.dy = -ball.dy
     
         -- left side of the paddle
         if ball.x < self.paddle.x + (self.paddle.width / 2) and self.paddle.dx < 0 then
-          ball.dx = -50 + -(8 * (self.paddle.x + self.paddle.width / 2 - ball.x))
+          ball.dx = -50 + -(ball.width * (self.paddle.x + self.paddle.width / 2 - ball.x))
         -- right side of the paddle
         elseif ball.x > self.paddle.x + (self.paddle.width / 2) and self.paddle.dx > 0 then
-          ball.dx = 50 + (8 * math.abs(self.paddle.x + self.paddle.width / 2 - ball.x))
+          ball.dx = 50 + (ball.width * math.abs(self.paddle.x + self.paddle.width / 2 - ball.x))
         end
         
         gSounds['paddle-hit']:play()
@@ -121,36 +133,38 @@ function PlayState:update(dt)
         brick:update(dt)
         
         if brick.inPlay and ball:collides(brick) then
-          brick:hit()
-          
-          self.score = self.score + (brick.tier * 200 + brick.color * 25)
+          if not brick.isLocked then
+            brick:hit()
+            
+            self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
-          if self.score > self.recoverPoints then
-            self.health = math.min(3, self.health + 1)
+            if self.score > self.recoverPoints then
+              self.health = math.min(3, self.health + 1)
 
-            self.recoverPoints = math.min(100000, self.recoverPoints * 2)
+              self.recoverPoints = math.min(100000, self.recoverPoints * 2)
 
-            gSounds['recover']:play()
-          end
+              gSounds['recover']:play()
+            end
 
-          if self:checkVictory() then
-            gSounds['victory']:play()
-            self.paddle:resetSize()
+            if self:checkVictory() then
+              gSounds['victory']:play()
+              self.paddle:resetSize()
 
-            gStateMachine:change('victory', {
-              level = self.level,
-              paddle = self.paddle,
-              health = self.health,
-              score = self.score,
-              ball = self.balls[1],
-              recoverPoints = self.recoverPoints
-            })
+              gStateMachine:change('victory', {
+                level = self.level,
+                paddle = self.paddle,
+                health = self.health,
+                score = self.score,
+                ball = self.balls[1],
+                recoverPoints = self.recoverPoints
+              })
+            end
           end
 
           -- left edge; (+2 for set by x as priority collision)
           if ball.x + 2 < brick.x and ball.dx > 0 then
             ball.dx = -ball.dx
-            ball.x = brick.x - 8
+            ball.x = brick.x - ball.width
           
           -- right edge; (+6 for set by x as priority collision)
           elseif ball.x + 6 > brick.x + brick.width and ball.dx < 0 then
@@ -160,7 +174,7 @@ function PlayState:update(dt)
           -- top edge;
           elseif ball.y < brick.y then
             ball.dy = -ball.dy
-            ball.y = brick.y - 8
+            ball.y = brick.y - ball.width
           
           -- bottom edge;
           else
@@ -235,6 +249,16 @@ function PlayState:checkVictory()
   end
 
   return true
+end
+
+function PlayState:hasLockedBricks()
+  for k, brick in pairs(self.bricks) do
+    if brick.isLocked then
+      return true
+    end
+  end
+
+  return false
 end
 
 function PlayState:takeHealth()

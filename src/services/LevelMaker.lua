@@ -21,6 +21,9 @@ function LevelMaker.createMap(level)
   local highestTier = math.min(3, math.floor(level / 3))
   local highestColor = math.min(5, level % 3 + 3)
 
+  local maxLockedBricksCount = level * 2
+  local lockedBricksCount = 0
+
   for y = 1, numRows do
     local skipPattern = math.random(2) == 1 and true or false
     local alternatePattern = math.random(2) == 1 and true or false
@@ -44,10 +47,19 @@ function LevelMaker.createMap(level)
         skipFlag = not skipFlag
       end
 
-      b = Brick(
-        (x-1) * 32 + 8 + (13 - numCols) * 16,
-        y * 16
-      )
+      if lockedBricksCount < maxLockedBricksCount then
+        b = Brick(
+          (x-1) * 32 + 8 + (13 - numCols) * 16,
+          y * 16,
+          math.random(1, 2) == 1
+        )
+        lockedBricksCount = lockedBricksCount + 1
+      else
+        b = Brick(
+          (x-1) * 32 + 8 + (13 - numCols) * 16,
+          y * 16
+        )
+      end
 
       if alternatePattern and alternateFlag then
         b.color = alternateColor1
