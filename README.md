@@ -6,6 +6,10 @@ Simple breakout game written with Lua and Love2D
 
 ![gameplay screen](./screenshots/gameplay.png)
 
+## gameplay with powerups
+
+![powerups screen](./screenshots/powerups.png)
+
 ## start screen
 
 ![start screen](./screenshots/main_menu.png)
